@@ -1,0 +1,106 @@
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+public class test {
+
+    /* =========================
+       DEPOSIT TESTS
+       ========================= */
+
+    @Test
+    void deposit_negativeAmount_shouldFail() {
+        Account acc = new Account(100, "Verified");
+        assertFalse(acc.deposit(-50));
+        assertEquals(100, acc.getBalance());
+    }
+
+    @Test
+    void deposit_zeroAmount_shouldFail() {
+        Account acc = new Account(100, "Verified");
+        assertFalse(acc.deposit(0));
+        assertEquals(100, acc.getBalance());
+    }
+
+    @Test
+    void deposit_closedAccount_shouldFail() {
+        Account acc = new Account(100, "Closed");
+        assertFalse(acc.deposit(50));
+        assertEquals(100, acc.getBalance());
+    }
+
+    @Test
+    void deposit_validAmount_shouldSucceed() {
+        Account acc = new Account(100, "Verified");
+        assertTrue(acc.deposit(50));
+        assertEquals(150, acc.getBalance());
+    }
+
+    /* =========================
+       WITHDRAW TESTS
+       ========================= */
+
+    @Test
+    void withdraw_closedAccount_shouldFail() {
+        Account acc = new Account(100, "Closed");
+        assertFalse(acc.withdraw(50));
+        assertEquals(100, acc.getBalance());
+    }
+
+    @Test
+    void withdraw_suspendedAccount_shouldFail() {
+        Account acc = new Account(100, "Suspended");
+        assertFalse(acc.withdraw(50));
+        assertEquals(100, acc.getBalance());
+    }
+
+    @Test
+    void withdraw_amountGreaterThanBalance_shouldFail() {
+        Account acc = new Account(100, "Verified");
+        assertFalse(acc.withdraw(200));
+        assertEquals(100, acc.getBalance());
+    }
+
+    @Test
+    void withdraw_exactBalance_shouldSucceed() {
+        Account acc = new Account(100, "Verified");
+        assertTrue(acc.withdraw(100));
+        assertEquals(0, acc.getBalance());
+    }
+
+    @Test
+    void withdraw_validAmount_shouldSucceed() {
+        Account acc = new Account(100, "Verified");
+        assertTrue(acc.withdraw(40));
+        assertEquals(60, acc.getBalance());
+    }
+
+    /* =========================
+       CREDIT SCORE TESTS
+       ========================= */
+
+    @Test
+    void creditScore_verifiedAccount_shouldBe50to100() {
+        Account acc = new Account(100, "Verified");
+        int score = acc.getCreditScore();
+        assertTrue(score >= 50 && score <= 100);
+    }
+
+    @Test
+    void creditScore_suspendedAccount_shouldBe0to49() {
+        Account acc = new Account(100, "Suspended");
+        int score = acc.getCreditScore();
+        assertTrue(score >= 0 && score <= 49);
+    }
+
+    @Test
+    void creditScore_closedAccount_shouldThrow() {
+        Account acc = new Account(100, "Closed");
+        assertThrows(IllegalStateException.class, () -> acc.getCreditScore());
+    }
+
+    @Test
+    void creditScore_invalidAccount_shouldThrow() {
+        Account acc = new Account(100, "Unknown");
+        assertThrows(IllegalArgumentException.class, () -> acc.getCreditScore());
+    }
+}
