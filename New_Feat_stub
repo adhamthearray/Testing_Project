@@ -1,0 +1,42 @@
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+class Account {
+    String status;
+    public Account(String status) { this.status = status; }
+
+    // Stub method
+    public int getCreditScore() {
+        // TODO: implement logic
+        return -1;
+    }
+}
+
+public class CreditScoreTDD {
+
+    @Test
+    void verifiedAccount_shouldReturnScore() {
+        Account account = new Account("Verified");
+        int score = account.getCreditScore();
+        assertTrue(score >= 50 && score <= 100, "Verified: score should be 50-100");
+    }
+
+    @Test
+    void suspendedAccount_shouldReturnLowScore() {
+        Account account = new Account("Suspended");
+        int score = account.getCreditScore();
+        assertTrue(score >= 0 && score <= 49, "Suspended: score should be 0-49");
+    }
+
+    @Test
+    void closedAccount_shouldThrowException() {
+        Account account = new Account("Closed");
+        assertThrows(IllegalStateException.class, () -> account.getCreditScore());
+    }
+
+    @Test
+    void invalidAccount_shouldThrowException() {
+        Account account = new Account("Unknown");
+        assertThrows(IllegalArgumentException.class, () -> account.getCreditScore());
+    }
+}
